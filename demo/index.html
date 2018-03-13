@@ -27,10 +27,10 @@
           <responsive-utility id="utility1"></responsive-utility>
           <p>
             My width is 
-            <span show-for="xs,xl">extra </span>
-            <span show-for="xs,sm">small</span>
+            <span show-for="xs xl">extra </span>
+            <span show-for="xs sm">small</span>
             <span show-for="md">medium</span>
-            <span show-for="lg,xl">large</span>.
+            <span show-for="lg xl">large</span>.
           </p>
           <p>
             If you note the previous statement, you know that my width is 
@@ -40,30 +40,30 @@
             #container1 [show-for] {
               display: none;
             }
-            #container1[responsive-size="xs"] span[show-for~='xs'] {
+            #container1[responsive-size="xs"] span[show-for~="xs"] {
               display: inline;
               background-color: #ffffaa;
             }
-            #container1[responsive-size="sm"] span[show-for~='sm'] {
+            #container1[responsive-size="sm"] span[show-for~="sm"] {
               display: inline;
               background-color: #ffffaa;
             }
-            #container1[responsive-size="md"] span[show-for~='md'] {
+            #container1[responsive-size="md"] span[show-for~="md"] {
               display: inline;
               background-color: #ffffaa;
             }
-            #container1[responsive-size="lg"] span[show-for~='lg'] {
+            #container1[responsive-size="lg"] span[show-for~="lg"] {
               display: inline;
               background-color: #ffffaa;
             }
-            #container1[responsive-size="xl"] span[show-for~='xl'] {
+            #container1[responsive-size="xl"] span[show-for~="xl"] {
               display: inline;
               background-color: #ffffaa;
             }
             #container1 [hide-for~='md'] {
               background-color: #ffffaa;
             }
-            #container1[responsive-size="md"] span[hide-for~='md'] {
+            #container1[responsive-size="md"] span[hide-for~="md"] {
               display: none;
             }
           </style>
@@ -93,23 +93,23 @@
             #container2 [show-for] {
               display: none;
             }
-            #container2[responsive-size="xs"] span[show-for~='xs'] {
+            #container2[responsive-size="xs"] span[show-for="xs"] {
               display: inline;
               background-color: #ffffaa;
             }
-            #container2[responsive-size="sm"] span[show-for~='sm'] {
+            #container2[responsive-size="sm"] span[show-for="sm"] {
               display: inline;
               background-color: #ffffaa;
             }
-            #container2[responsive-size="md"] span[show-for~='md'] {
+            #container2[responsive-size="md"] span[show-for="md"] {
               display: inline;
               background-color: #ffffaa;
             }
-            #container2[responsive-size="lg"] span[show-for~='lg'] {
+            #container2[responsive-size="lg"] span[show-for="lg"] {
               display: inline;
               background-color: #ffffaa;
             }
-            #container2[responsive-size="xl"] span[show-for~='xl'] {
+            #container2[responsive-size="xl"] span[show-for="xl"] {
               display: inline;
               background-color: #ffffaa;
             }
