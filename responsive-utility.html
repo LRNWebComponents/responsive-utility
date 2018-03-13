@@ -82,6 +82,7 @@ Until there are container queries, this utility will provide some level of respo
       },
       attached: function() {
         this.async(this.notifyResize, 1);
+        this._onIronResize();
       },
       __getParent: function() {
         if (this.parentNode.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
@@ -92,9 +93,8 @@ Until there are container queries, this utility will provide some level of respo
       /**
        * On resize test for determine breakpoints
        */
-      _onIronResize: function() {
-        let screen = 'xl', width = this.responsiveToParent !== false ? this.__getParent().offsetWidth : window.outerWidth
-        this.__currentSize = this.__currentSize !== undefined ? this.__currentSize : 'extra-small-screen';
+      getResponsiveSize: function() {
+        let screen = 'xl', width = this.responsiveToParent !== false ? this.__getParent().offsetWidth : window.outerWidth;
         if(this._testBreakpoint(width,this.sm,600)) {
           screen = 'xs';
         } else if(this._testBreakpoint(width,this.md,900)) {
@@ -104,6 +104,14 @@ Until there are container queries, this utility will provide some level of respo
         } else if(this._testBreakpoint(width,this.xl,1200)) {
           screen = 'lg';
         }
+        return screen;
+      },
+      /**
+       * On resize test for determine breakpoints
+       */
+      _onIronResize: function() {
+        let screen = this.getResponsiveSize();
+        this.__currentSize = this.__currentSize !== undefined ? this.__currentSize : 'xs';
         if (screen !== this.__currentSize) {
           this.__currentSize = screen;
           this.fire('screen-resize',{screen: this.__currentSize} );
