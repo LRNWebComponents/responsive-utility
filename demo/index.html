@@ -13,14 +13,116 @@
     <link rel="import" href="../responsive-utility.html">
 
     <style is="custom-style" include="demo-pages-shared-styles">
+      .vertical-section-container {
+        width: 95%;
+        max-width: unset;
+      }
     </style>
   </head>
   <body>
     <div class="vertical-section-container centered">
       <h3>Basic responsive-utility demo</h3>
-      <demo-snippet>
+      <demo-snippet id="container1">
         <template>
-          <responsive-utility></responsive-utility>
+          <responsive-utility id="utility1"></responsive-utility>
+          <p>
+            My width is 
+            <span show-for="xs,xl">extra </span>
+            <span show-for="xs,sm">small</span>
+            <span show-for="md">medium</span>
+            <span show-for="lg,xl">large</span>.
+          </p>
+          <p>
+            If you note the previous statement, you know that my width is 
+            <span hide-for="md"><strong><em>NOT</em></span> medium.
+          </p>
+          <style>
+            #container1 [show-for] {
+              display: none;
+            }
+            #container1[responsive-size="xs"] span[show-for~='xs'] {
+              display: inline;
+              background-color: #ffffaa;
+            }
+            #container1[responsive-size="sm"] span[show-for~='sm'] {
+              display: inline;
+              background-color: #ffffaa;
+            }
+            #container1[responsive-size="md"] span[show-for~='md'] {
+              display: inline;
+              background-color: #ffffaa;
+            }
+            #container1[responsive-size="lg"] span[show-for~='lg'] {
+              display: inline;
+              background-color: #ffffaa;
+            }
+            #container1[responsive-size="xl"] span[show-for~='xl'] {
+              display: inline;
+              background-color: #ffffaa;
+            }
+            #container1 [hide-for~='md'] {
+              background-color: #ffffaa;
+            }
+            #container1[responsive-size="md"] span[hide-for~='md'] {
+              display: none;
+            }
+          </style>
+          <script>
+            window.onload = function(){
+              var util1 = document.getElementById('utility1');
+              var container1 = document.getElementById('container1');
+              util1.addEventListener('screen-resize',function(){
+                container1.setAttribute('responsive-size',util1.responsiveSize);
+              });
+            }
+          </script>
+        </template>
+      </demo-snippet>
+      <h3>Responsive-utility with custom breakpoints demo</h3>
+      <demo-snippet id="container2">
+        <template>
+          <responsive-utility id="utility2" sm="800" md="1200" lg="1600" xl="2000"></responsive-utility>
+          <p>My width is 
+            <span show-for="xs">&lt; 800px.</span>
+            <span show-for="sm">&gt;= 800px.</span>
+            <span show-for="md">&gt;= 1200px.</span>
+            <span show-for="lg">&gt;= 1600px.</span>
+            <span show-for="xl">&gt;= 2000px.</span>
+          </p>
+          <style>
+            #container2 [show-for] {
+              display: none;
+            }
+            #container2[responsive-size="xs"] span[show-for~='xs'] {
+              display: inline;
+              background-color: #ffffaa;
+            }
+            #container2[responsive-size="sm"] span[show-for~='sm'] {
+              display: inline;
+              background-color: #ffffaa;
+            }
+            #container2[responsive-size="md"] span[show-for~='md'] {
+              display: inline;
+              background-color: #ffffaa;
+            }
+            #container2[responsive-size="lg"] span[show-for~='lg'] {
+              display: inline;
+              background-color: #ffffaa;
+            }
+            #container2[responsive-size="xl"] span[show-for~='xl'] {
+              display: inline;
+              background-color: #ffffaa;
+            }
+          </style>
+          <script>
+            window.onload = function(){
+              var util2 = document.getElementById('utility1');
+              var container2 = document.getElementById('container1');
+              util2.addEventListener('screen-resize',function(){
+                container2.setAttribute('responsive-size',util1.responsiveSize);
+              });
+            }
+          </script>
         </template>
       </demo-snippet>
     </div>
