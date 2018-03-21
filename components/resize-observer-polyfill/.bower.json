@@ -1,0 +1,37 @@
+{
+  "name": "resize-observer-polyfill",
+  "description": "A polyfill for the Resize Observer API",
+  "authors": [
+    "Denis Rul <que.etc@gmail.com>"
+  ],
+  "moduleType": [
+    "globals",
+    "amd",
+    "node",
+    "es6"
+  ],
+  "main": [
+    "dist/ResizeObserver.js"
+  ],
+  "keywords": [
+    "ResizeObserver",
+    "resize",
+    "observer",
+    "util",
+    "client",
+    "browser",
+    "polyfill",
+    "ponyfill"
+  ],
+  "homepage": "https://github.com/que-etc/resize-observer-polyfill",
+  "version": "1.5.0",
+  "_release": "1.5.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.5.0",
+    "commit": "a3ae98bcd34e972b92d9e40e8b974a75399503e8"
+  },
+  "_source": "https://github.com/que-etc/resize-observer-polyfill.git",
+  "_target": "^1.5.0",
+  "_originalSource": "resize-observer-polyfill"
+}
