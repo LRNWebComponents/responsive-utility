@@ -31,96 +31,163 @@ Until there are container queries, this utility will provide some level of respo
   </template>
 
   <script>
-    Polymer({
+    (function() {
+      'use strict';
+  
+      Polymer.ResponsiveUtility = Polymer({
 
-      is: 'responsive-utility',
+        is: 'responsive-utility',
 
-      behaviors: [
-        Polymer.IronResizableBehavior
-      ],
+        behaviors: [
+          Polymer.IronResizableBehavior
+        ],
 
-      listeners: {
-        'iron-resize': '_onIronResize'
-      },
+        listeners: {
+          'iron-resize': '_onIronResize'
+        },
+        
+        properties: {
+          /**
+           * Stores 
+           */
+          targets: {
+            type: Array,
+            value: [],
+          },
+          /**
+           * Stores 
+           */
+          parents: {
+            type: Array,
+            value: [],
+          },
+        },
 
-      properties: {
         /**
-         * custom small breakpoint (default is 600px)
+        * An array of objects. Each object is contains data about an element 
+        * that will be updated with responsive values.
+        *
+        * To add an element to this array, fire a 'responsive-element' event 
+        * with the following data:
+        *
+        * {
+        *   "element": (the element itself),
+        *   "attribute": (the attribute that will be set with the size),
+        *   "relativeToParent": (true for @element query instead of @media query),
+        *   "sm": (optional custom sm breakpoint, default is 600),
+        *   "md": (optional custom md breakpoint, default is 900),
+        *   "lg": (optional custom lg breakpoint, default is 1200),
+        *   "xl": (optional custom xl breakpoint, default is 1500),
+        * }
+        *
+        */
+        attached: function() {
+          this.async(this.notifyResize, 1);
+          this._onIronResize();
+        },
+        
+        /**
+         * Makes sure there is a utility ready and listening for elements.
          */
-        sm: {
-          type: Number,
-          value: null,
+        created: function() {
+          let root = this, parents = [];
+          if (!Polymer.ResponsiveUtility.instance) {
+            Polymer.ResponsiveUtility.instance = root;
+          }
+          document.body.addEventListener('responsive-element', function(e){
+            if(e.detail.relativeToParent) {
+              let parent = e.detail.element.parentNode;
+              if (e.detail.element.parentNode.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
+                parent = e.detail.element.parentNode.host;
+              }
+              let parentItem = root.parents.find( item => item.parent === parent);
+              if(parentItem !== undefined){
+                parentItem.children.push(e.detail);
+              } else {
+                let resize = setInterval(function(){ 
+                  let size = parent.offsetWidth;
+                  if(size !== parent.size){
+                    for(let i=0; i < parentItem.children.length; i++){
+                      Polymer.ResponsiveUtility.setSize(parentItem.children[i],parent);
+                    }
+                  }
+                }, 1000);
+                root.parents.push({
+                  "parent": parent,
+                  "resize": resize,
+                  "size": parent.offsetWidth,
+                  "children": [e.detail]
+                });
+              }
+            } else {
+              Polymer.ResponsiveUtility.setSize(e.detail);
+              root.targets.push(e.detail);
+            }
+          });
+          document.body.addEventListener('clear-responsive-element', function(e){
+            let parent = e.detail.element.parentNode, parentItem = root.parents.find( item => item.parent === parent);
+
+          });
         },
         /**
-         * custom medium breakpoint (default is 900px)
+         * On resize, sets sizes of any target element that has changed.
          */
-        md: {
-          type: Number,
-          value: null,
+        _onIronResize: function(){
+          for(let i=0; i < this.targets.length; i++){
+            Polymer.ResponsiveUtility.setSize(this.targets[i]);
+          }
         },
-        /**
-         * custom large breakpoint (default is 1200px)
-         */
-        lg: {
-          type: Number,
-          value: null,
-        },
-        /**
-         * custom extra-large breakpoint (default is 1800px)
-         */
-        xl: {
-          type: Number,
-          value: null,
-        },
-        /**
-         * Set extra-large breakpoint
-         */
-        responsiveToParent: {
-          type: Boolean,
-          value: false,
-        },
-      },
-      attached: function() {
-        this.async(this.notifyResize, 1);
-        this._onIronResize();
-      },
+      });
+
+      Polymer.ResponsiveUtility.instance = null;
+
       /**
-       * returns responsive size
+       * Checks to see if there is an instance available, and if not appends one
        */
-      getResponsiveSize: function() {
-        let screen = 'xl', width = this.responsiveToParent !== false ? this.__getParent().offsetWidth : window.outerWidth;
-        if(this._testBreakpoint(width,this.sm,600)) {
-          screen = 'xs';
-        } else if(this._testBreakpoint(width,this.md,900)) {
-          screen = 'sm';
-        } else if(this._testBreakpoint(width,this.lg,1200)) {
-          screen = 'md';
-        } else if(this._testBreakpoint(width,this.xl,1200)) {
-          screen = 'lg';
+      Polymer.ResponsiveUtility.requestAvailability = function() {
+        if (!Polymer.ResponsiveUtility.instance) {
+          Polymer.ResponsiveUtility.instance = document.createElement('responsive-utility');
         }
-        return screen;
-      },
-      __getParent: function() {
-        if (this.parentNode.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
-          return this.parentNode.host;
-        }
-        return this.parentNode;
-      },
+
+        document.body.appendChild(Polymer.ResponsiveUtility.instance);
+      };
       /**
-       * On resize test for determine breakpoints
+       * Sets responsive size of target.
        */
-      _onIronResize: function() {
-        let screen = this.getResponsiveSize();
-        this.__currentSize = this.__currentSize !== undefined ? this.__currentSize : 'xs';
-        if (screen !== this.__currentSize) {
-          this.__currentSize = screen;
-          this.fire('screen-resize',{screen: this.__currentSize} );
+      Polymer.ResponsiveUtility.setSize = function(target) {
+        let element = target.element, attribute = target.attribute, size = Polymer.ResponsiveUtility.getSize(target,parent);
+        if (element.getAttribute(attribute) === undefined || size !== element.getAttribute(attribute)) {
+          element.setAttribute(attribute,size);
         }
-      },
-      _testBreakpoint(width,breakpoint,def){
-        let val = breakpoint !== null ? breakpoint : def;
-        return width < val;
-      }
-    });
+      };
+      /**
+       * Returns responsive size of target.
+       */
+      Polymer.ResponsiveUtility.getSize = function(target,parent) {
+        let size, getParent = function() {
+          if (target.element.parentNode.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
+            return target.element.parentNode.host;
+          }
+          return target.element.parentNode;
+        };
+        let testBreakpoint = function(width,breakpoint,def){
+          let val = breakpoint !== undefined && breakpoint !== null ? breakpoint : def;
+          return width < val;
+        };
+        let width = parent !== undefined ? target.element.getParent().offsetWidth : window.outerWidth;
+        if(testBreakpoint(width,target.sm,600)) {
+          size = 'xs';
+        } else if(testBreakpoint(width,target.md,900)) {
+          size = 'sm';
+        } else if(testBreakpoint(width,target.lg,1200)) {
+          size = 'md';
+        } else if(testBreakpoint(width,target.xl,1200)) {
+          size = 'lg';
+        } else {
+          size = 'xl';
+        }
+        return size;
+      };
+    })();
   </script>
 </dom-module>

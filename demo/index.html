@@ -24,7 +24,6 @@
       <h3>Basic responsive-utility demo</h3>
       <demo-snippet id="container1">
         <template>
-          <responsive-utility id="utility1" responsive-to-parent></responsive-utility>
           <p>
             My width is 
             <span show-for="xs xl">extra </span>
@@ -68,10 +67,12 @@
             }
           </style>
           <script>
-            var utility1 = document.getElementById('utility1'), container1 = document.getElementById('container1');
-            container1.setAttribute('responsive-size',utility1.getResponsiveSize());
-            utility1.addEventListener('screen-resize',function(e){
-              container1.setAttribute('responsive-size',e.detail.screen);
+            Polymer.ResponsiveUtility.requestAvailability();
+            var container1 = document.getElementById('container1');
+            container1.fire('responsive-element',{
+              "element": container1,
+              "attribute": "responsive-size",
+              "relativeToParent": true,
             });
           </script>
         </template>
@@ -79,7 +80,6 @@
       <h3>Responsive-utility with custom breakpoints demo</h3>
       <demo-snippet id="container2">
         <template>
-          <responsive-utility id="utility2" sm="800" md="1200" lg="1600" xl="2000" responsive-to-parent></responsive-utility>
           <p>My width is 
             <span show-for="xs">&lt; 800px.</span>
             <span show-for="sm">&gt;= 800px.</span>
@@ -91,33 +91,42 @@
             #container2 [show-for] {
               display: none;
             }
-            #container2[responsive-size="xs"] span[show-for="xs"] {
+            #container2[parent-size="xs"] span[show-for="xs"] {
               display: inline;
               background-color: #ffffaa;
             }
-            #container2[responsive-size="sm"] span[show-for="sm"] {
+            #container2[parent-size="sm"] span[show-for="sm"] {
               display: inline;
               background-color: #ffffaa;
             }
-            #container2[responsive-size="md"] span[show-for="md"] {
+            #container2[parent-size="md"] span[show-for="md"] {
               display: inline;
               background-color: #ffffaa;
             }
-            #container2[responsive-size="lg"] span[show-for="lg"] {
+            #container2[parent-size="lg"] span[show-for="lg"] {
               display: inline;
               background-color: #ffffaa;
             }
-            #container2[responsive-size="xl"] span[show-for="xl"] {
+            #container2[parent-size="xl"] span[show-for="xl"] {
               display: inline;
               background-color: #ffffaa;
             }
           </style>
           <script>
-            var utility2 = document.getElementById('utility2'), container2 = document.getElementById('container2');
-            container2.setAttribute('responsive-size',utility2.getResponsiveSize());
-            utility2.addEventListener('screen-resize',function(e){
-              container2.setAttribute('responsive-size',e.detail.screen);
+            Polymer.ResponsiveUtility.requestAvailability();
+            var container2 = document.getElementById('container2');
+            container2.fire('responsive-element',{
+              "element": container2,
+              "attribute": "parent-size",
+              "relativeToParent": true,
+              "sm": 400,
+              "md": 800,
+              "lg": 1200,
+              "xl": 1600,
             });
+            container2.onclick = function(){
+              container2.parentNode.style.width = "50px";
+            }
           </script>
         </template>
       </demo-snippet>
