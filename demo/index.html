@@ -71,8 +71,7 @@
             var container1 = document.getElementById('container1');
             container1.fire('responsive-element',{
               "element": container1,
-              "attribute": "responsive-size",
-              "relativeToParent": true,
+              "attribute": "responsive-size"
             });
           </script>
         </template>
@@ -124,9 +123,6 @@
               "lg": 1200,
               "xl": 1600,
             });
-            container2.onclick = function(){
-              container2.parentNode.style.width = "50px";
-            }
           </script>
         </template>
       </demo-snippet>

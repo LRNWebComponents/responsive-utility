@@ -54,13 +54,6 @@ Until there are container queries, this utility will provide some level of respo
             type: Array,
             value: [],
           },
-          /**
-           * Stores 
-           */
-          parents: {
-            type: Array,
-            value: [],
-          },
         },
 
         /**
@@ -90,43 +83,22 @@ Until there are container queries, this utility will provide some level of respo
          * Makes sure there is a utility ready and listening for elements.
          */
         created: function() {
-          let root = this, parents = [];
+          let root = this;
           if (!Polymer.ResponsiveUtility.instance) {
             Polymer.ResponsiveUtility.instance = root;
           }
           document.body.addEventListener('responsive-element', function(e){
-            if(e.detail.relativeToParent) {
-              let parent = e.detail.element.parentNode;
-              if (e.detail.element.parentNode.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
-                parent = e.detail.element.parentNode.host;
+            if ('ResizeObserver' in window && e.detail.relativeToParent === true) {
+              let parent = e.detail.element.parentNode, resize = new ResizeObserver(function(){
+                Polymer.ResponsiveUtility.setSize(e.detail);
+              });
+              if (parent.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
+                parent = parent.host;
               }
-              let parentItem = root.parents.find( item => item.parent === parent);
-              if(parentItem !== undefined){
-                parentItem.children.push(e.detail);
-              } else {
-                let resize = setInterval(function(){ 
-                  let size = parent.offsetWidth;
-                  if(size !== parent.size){
-                    for(let i=0; i < parentItem.children.length; i++){
-                      Polymer.ResponsiveUtility.setSize(parentItem.children[i],parent);
-                    }
-                  }
-                }, 1000);
-                root.parents.push({
-                  "parent": parent,
-                  "resize": resize,
-                  "size": parent.offsetWidth,
-                  "children": [e.detail]
-                });
-              }
-            } else {
-              Polymer.ResponsiveUtility.setSize(e.detail);
-              root.targets.push(e.detail);
+              resize.observe(parent);
             }
-          });
-          document.body.addEventListener('clear-responsive-element', function(e){
-            let parent = e.detail.element.parentNode, parentItem = root.parents.find( item => item.parent === parent);
-
+            root.targets.push(e.detail);
+            Polymer.ResponsiveUtility.setSize(e.detail);
           });
         },
         /**
@@ -155,7 +127,7 @@ Until there are container queries, this utility will provide some level of respo
        * Sets responsive size of target.
        */
       Polymer.ResponsiveUtility.setSize = function(target) {
-        let element = target.element, attribute = target.attribute, size = Polymer.ResponsiveUtility.getSize(target,parent);
+        let element = target.element, attribute = target.attribute, size = Polymer.ResponsiveUtility.getSize(target);
         if (element.getAttribute(attribute) === undefined || size !== element.getAttribute(attribute)) {
           element.setAttribute(attribute,size);
         }
@@ -163,18 +135,19 @@ Until there are container queries, this utility will provide some level of respo
       /**
        * Returns responsive size of target.
        */
-      Polymer.ResponsiveUtility.getSize = function(target,parent) {
-        let size, getParent = function() {
-          if (target.element.parentNode.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
-            return target.element.parentNode.host;
+      Polymer.ResponsiveUtility.getSize = function(target) {
+        let getWidth = function() {
+          if(target.relativeToParent === true){
+            if (target.element.parentNode.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
+              return target.element.parentNode.host.offsetWidth;
+            }
+            return target.element.parentNode.offsetWidth;
           }
-          return target.element.parentNode;
-        };
-        let testBreakpoint = function(width,breakpoint,def){
+          return window.outerWidth;
+        }, testBreakpoint = function(width,breakpoint,def){
           let val = breakpoint !== undefined && breakpoint !== null ? breakpoint : def;
           return width < val;
-        };
-        let width = parent !== undefined ? target.element.getParent().offsetWidth : window.outerWidth;
+        }, size, width = getWidth();
         if(testBreakpoint(width,target.sm,600)) {
           size = 'xs';
         } else if(testBreakpoint(width,target.md,900)) {
