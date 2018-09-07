@@ -87,6 +87,7 @@ Until there are container queries, this utility will provide some level of respo
           if (!Polymer.ResponsiveUtility.instance) {
             Polymer.ResponsiveUtility.instance = root;
           }
+          /* handle element registration */
           document.body.addEventListener('responsive-element', function(e){
             let relative = e.detail.relativeToParent !== undefined && e.detail.relativeToParent !== null ? e.detail.relativeToParent : true;
             if ('ResizeObserver' in window && relative.relativeToParent === true) {
@@ -98,8 +99,14 @@ Until there are container queries, this utility will provide some level of respo
               }
               resize.observe(parent);
             }
-            root.targets.push(e.detail);
+            root.push('targets',e.detail);
             Polymer.ResponsiveUtility.setSize(e.detail);
+          });
+          /* handle element deregistration */
+          document.body.addEventListener('delete-responsive-element', function(e){
+            for(let i=0; i < this.targets.length; i++){
+              if(e.detail === target[i]) root.splice('targets',i,1);
+            }    
           });
         },
         /**
@@ -141,7 +148,7 @@ Until there are container queries, this utility will provide some level of respo
       Polymer.ResponsiveUtility.getSize = function(target) {
         let relative = target.relativeToParent !== undefined && target.relativeToParent !== null ? target.relativeToParent : true;
         let getWidth = function() {
-          if(relative === true){
+          if(target.element.parentNode !== null && relative === true){
             if (target.element.parentNode.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
               return target.element.parentNode.host.offsetWidth;
             }

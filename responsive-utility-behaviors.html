@@ -59,6 +59,9 @@ To use in a webcomponent:
           value: 1500
         },
       },
+      /*
+        * init the utility & register element
+        */
       attached: function(){
         let root = this;
         Polymer.ResponsiveUtility.requestAvailability();
@@ -72,6 +75,12 @@ To use in a webcomponent:
           "attribute": root.attribute
         });
       },
+      /*
+        * deregister the element
+        */
+      detached: function(){
+        let root = this;
+        root.fire('responsive-element-deleted',root);
+      },
     };
   </script>
-  
