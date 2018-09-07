@@ -88,7 +88,8 @@ Until there are container queries, this utility will provide some level of respo
             Polymer.ResponsiveUtility.instance = root;
           }
           document.body.addEventListener('responsive-element', function(e){
-            if ('ResizeObserver' in window && e.detail.relativeToParent === true) {
+            let relative = e.detail.relativeToParent !== undefined && e.detail.relativeToParent !== null ? e.detail.relativeToParent : true;
+            if ('ResizeObserver' in window && relative.relativeToParent === true) {
               let parent = e.detail.element.parentNode, resize = new ResizeObserver(function(){
                 Polymer.ResponsiveUtility.setSize(e.detail);
               });
@@ -127,7 +128,9 @@ Until there are container queries, this utility will provide some level of respo
        * Sets responsive size of target.
        */
       Polymer.ResponsiveUtility.setSize = function(target) {
-        let element = target.element, attribute = target.attribute, size = Polymer.ResponsiveUtility.getSize(target);
+        let element = target.element; 
+        let attribute = target.attribute !== undefined && target.attribute !== null ? target.attribute : 'responsive-size';
+        let size = Polymer.ResponsiveUtility.getSize(target);
         if (element.getAttribute(attribute) === undefined || size !== element.getAttribute(attribute)) {
           element.setAttribute(attribute,size);
         }
@@ -136,8 +139,9 @@ Until there are container queries, this utility will provide some level of respo
        * Returns responsive size of target.
        */
       Polymer.ResponsiveUtility.getSize = function(target) {
+        let relative = target.relativeToParent !== undefined && target.relativeToParent !== null ? target.relativeToParent : true;
         let getWidth = function() {
-          if(target.relativeToParent === true){
+          if(relative === true){
             if (target.element.parentNode.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
               return target.element.parentNode.host.offsetWidth;
             }

@@ -21,7 +21,49 @@
   </head>
   <body>
     <div class="vertical-section-container centered">
-      <h3>Basic responsive-utility demo</h3>
+      <h2>Basic responsive-utility demo</h2>
+      <p>There are two ways to use this utility: on web components or on other elements.</p>
+      <h3>Web Components</h3>
+      <p>To use it web components:</p>
+      <ol>
+        <li>Include the following: <tt><link rel="import" href="path/to/responsive-utility-behaviors.html"></tt></li>
+        <li>Add it to the component's array of behaviors: <tt>behaviors: [ ResponsiveUtilityBehaviors ],</tt></li>
+        <li>Optional: If you wish to override the default properties:<br>
+          <tt>
+            this.attribute = "<em>custom-attribute-name-here</em>"; //optional: custom attribute name, default is "responsive-size"<br>
+            this.relativeToParent = <em>false</em>; //optional: false for media query behavior; default is true for element query behvavior<br>
+            this.sm = <em>400</em>; //custom sm breakpoint; default is 600<br>
+            this.md = <em>800</em>; //custom md breakpoint; default is 900<br>
+            this.lg = <em>1200</em>; //custom lg breakpoint; default is 1200<br>
+            this.xl = <em>1600</em>; //custom xl breakpoint; default is 1500
+          </tt>
+        </li>
+      </ol>
+      <h3>Other Elements</h3>
+      <p>To use it on other elements:</p>
+      <ol>
+        <li>Include the following: <tt><link rel="import" href="path/to/responsive-utility.html"></tt></li>
+        <li>Use a script to call the utility:<br>
+          <tt>
+            &lt;script&gt;<br>
+            &nbsp;&nbsp;Polymer.ResponsiveUtility.requestAvailability();<br>
+            &nbsp;&nbsp;var <em>el</em> = document.getElementById('<em>element-id-here</em>');<br>
+            &nbsp;&nbsp;<em>el</em>.fire('responsive-element',{<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;"element": <em>el</em>,<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;"attribute": "<em>responsive-size</em>", //optional: custom attribute name, default is "responsive-size"<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;"relativeToParent": <em>true</em>, //optional: false for media query behavior; default is true for element query behvavior<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;"sm": <em>400</em>, //optional: custom sm breakpoint; default is 600<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;"md": <em>800</em>, //optional: custom md breakpoint; default is 900<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;"lg": <em>1200</em>, //optional: custom lg breakpoint; default is 1200<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;"xl": <em>1600</em>, //optional: custom xl breakpoint; default is 1500<br>
+            &nbsp;&nbsp;});<br>
+            &lt;/script&gt;
+          </tt>
+        </li>
+        <li>Include styles based on the attribute you set, for example: <tt><em>#element-id-here</em> [<em>responsive-css-attribute-here</em> = "xs"] { display: none; }</tt></li>
+      </ol>
+      <p>Examples of the utilty on other elements are below...</p>
+      <h4>Basic responsive-utility demo</h4>
       <demo-snippet id="container1">
         <template>
           <p>
